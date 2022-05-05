@@ -112,4 +112,15 @@ public class Enemy : MonoBehaviour
     {
         Destroy(gameObject);
     }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        print("COLLISION");
+        PlayerController player;
+        if (collision.gameObject.GetComponent<PlayerController>())
+        {
+            player = collision.gameObject.GetComponent<PlayerController>();
+            player.Kill();
+        }
+    }
 }

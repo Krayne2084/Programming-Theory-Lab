@@ -3,23 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor;
+using TMPro;
 using System.IO;
 public class GameManager : MonoBehaviour
 {
     public static bool isPaused { get; protected set; } = false;
-    float seconds;
-    string playerName;
-    [SerializeField] TMPro.TextMeshProUGUI placeholderName;
+    public static bool hasGameEnded { get; protected set; } = false;
+    public static string playerName { get; protected set; }
+    [SerializeField] TextMeshProUGUI placeholderName;
+    [SerializeField] TextMeshProUGUI nameInput;
     string savePath;
     private void Start()
     {
         savePath = Application.persistentDataPath + "/saveFile.json";
-        LoadScore();
     }
 
     protected virtual void Awake()
     {
         ResetTime();
+        hasGameEnded = false;
+        isPaused = false;
         /*if (!Instance)
         {
             Instance = this;
@@ -38,6 +41,7 @@ public class GameManager : MonoBehaviour
             placeholderName.text = "Please Enter Name...";
             return;
         }
+        SetName(nameInput);
         SceneManager.LoadScene(1);
     }
     public void LoadMenu()
@@ -62,24 +66,37 @@ public class GameManager : MonoBehaviour
     {
         playerName = text.text;
     }
-    public void Save()
+    public void SaveScore()
     {
         Score score = new Score();
-        score.m_score = Mathf.FloorToInt(seconds);
-        score.playerName = playerName;
-        string json =  JsonUtility.ToJson(score);
-        File.WriteAllText(savePath, json);
+        int currentScore = MainManager.wave - 1;
+        int highScore;
+        if (LoadScore() != null)
+        {
+            highScore = LoadScore().m_waves;
+        }
+        else
+        {
+            highScore = 0;
+        }
+        if (currentScore > highScore)
+        {
+            score.m_waves = currentScore;
+            score.playerName = playerName;
+
+            string json = JsonUtility.ToJson(score);
+            File.WriteAllText(savePath, json);
+        }
     }
-    public void LoadScore()
+    public Score LoadScore()
     {
         if (!File.Exists(savePath))
         {
-            return;
+            return null;
         }
         string json = File.ReadAllText(savePath);
         Score score = JsonUtility.FromJson<Score>(json);
-        playerName = score.playerName;
-        seconds = score.score;
+        return score;
     }
     public void Exitgame()
     {
@@ -93,12 +110,12 @@ public class GameManager : MonoBehaviour
 public class Score
 {
     public string playerName;
-    public int m_score;
-    public int score 
+    public int m_waves;
+    public int waves 
     { 
         get 
         {
-            return m_score;
+            return m_waves;
         } 
         protected set
         {
@@ -108,7 +125,7 @@ public class Score
             }
             else
             {
-                m_score = value;
+                m_waves = value;
             }
         } 
     }

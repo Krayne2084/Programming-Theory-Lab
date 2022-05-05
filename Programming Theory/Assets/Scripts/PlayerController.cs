@@ -14,11 +14,13 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D _rb;
     CircleCollider2D _collider;
     Camera mainCam;
+    MainManager mainManager;
     private void Start()
     {
         _transform = transform;
         _rb = GetComponent<Rigidbody2D>();
         _collider = GetComponent<CircleCollider2D>();
+        mainManager = FindObjectOfType<MainManager>();
         mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
     }
 
@@ -78,5 +80,9 @@ public class PlayerController : MonoBehaviour
         Vector3 mousePos =  mainCam.ScreenToWorldPoint(Input.mousePosition);
         Vector2 lookDir = mousePos - _transform.position;
         _transform.rotation = Quaternion.Euler(Vector3.forward * ((Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg) - 90f));
+    }
+    public void Kill()
+    {
+        mainManager.GameOver();
     }
 }

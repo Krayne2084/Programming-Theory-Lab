@@ -25,10 +25,17 @@ public class MainManager : GameManager
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && !hasGameEnded)
         {
             PauseGame();
         }
+    }
+    private void UpdateScoreDisplay()
+    {
+        scoreText.text = "Waves: " + (wave - 1);
+        SaveScore();
+        Score score = LoadScore();
+        highScoreText.text = $"Most Waves: {score.playerName} - {score.m_waves}"; 
     }
     public void PauseGame()
     {
@@ -46,6 +53,8 @@ public class MainManager : GameManager
         pauseText.SetActive(true);
         gameOverText.SetActive(false);
 
+        Cursor.visible = true;
+
         isPaused = true;
     }
     public void GameOver()
@@ -55,5 +64,12 @@ public class MainManager : GameManager
         pauseScreen.SetActive(true);
         pauseText.SetActive(false);
         gameOverText.SetActive(true);
+        hasGameEnded = true;
+
+        UpdateScoreDisplay();
+
+        Cursor.visible = true;
+
+        isPaused = true;
     }
 }
