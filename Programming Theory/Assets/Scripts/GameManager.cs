@@ -10,8 +10,8 @@ public class GameManager : MonoBehaviour
     public static bool isPaused { get; protected set; } = false;
     public static bool hasGameEnded { get; protected set; } = false;
     public static string playerName { get; protected set; }
-    [SerializeField] TextMeshProUGUI placeholderName;
-    [SerializeField] TextMeshProUGUI nameInput;
+    public TextMeshProUGUI placeholderName;
+    public TextMeshProUGUI nameInput;
     string savePath;
     private void Start()
     {
@@ -34,14 +34,8 @@ public class GameManager : MonoBehaviour
         }*/
     }
 
-    public void LoadMain()
+    public virtual void LoadMain()
     {
-        if (playerName == null)
-        {
-            placeholderName.text = "Please Enter Name...";
-            return;
-        }
-        SetName(nameInput);
         SceneManager.LoadScene(1);
     }
     public void LoadMenu()

@@ -13,6 +13,7 @@ public class MainManager : GameManager
     [SerializeField] private GameObject pauseScreen;
     [SerializeField] GameObject pauseText;
     [SerializeField] GameObject gameOverText;
+    [SerializeField] GameObject restartButton;
     [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] TextMeshProUGUI highScoreText;
 

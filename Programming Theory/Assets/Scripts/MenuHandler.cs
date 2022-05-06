@@ -25,6 +25,16 @@ public class MenuHandler : GameManager
             highScoreText.text = "High Score: 0";
         }
     }
+    public override void LoadMain()
+    {
+        if (playerName == null)
+        {
+            placeholderName.text = "Please Enter Name...";
+            return;
+        }
+        SetName(nameInput);
+        base.LoadMain();
+    }
     public void StartGame()
     {
         LoadMain();
