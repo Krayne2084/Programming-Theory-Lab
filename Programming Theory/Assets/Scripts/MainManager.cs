@@ -61,7 +61,6 @@ public class MainManager : GameManager
     public void GameOver()
     {
         Time.timeScale = 0;
-        //Show Restart Button
         pauseScreen.SetActive(true);
         pauseText.SetActive(false);
         gameOverText.SetActive(true);
