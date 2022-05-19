@@ -7,19 +7,18 @@ using TMPro;
 using System.IO;
 public class GameManager : MonoBehaviour
 {
-    public static bool isPaused { get; protected set; } = false;
+    public static bool isPaused = false;
     public static bool hasGameEnded { get; protected set; } = false;
     public static string playerName { get; protected set; }
+    [Header("GameManager")]
     public TextMeshProUGUI placeholderName;
     public TextMeshProUGUI nameInput;
     string savePath;
-    private void Start()
-    {
-        savePath = Application.persistentDataPath + "/saveFile.json";
-    }
+    string savePref = "PortalPusherSave";
 
     protected virtual void Awake()
     {
+        savePath = Application.persistentDataPath + "/Saves/saveFile.json";
         ResetTime();
         hasGameEnded = false;
         isPaused = false;
@@ -49,14 +48,18 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1;
         isPaused = false;
     }
-    public void ResetScore()
+    public virtual void ResetScore()
     {
-        if (File.Exists(savePath))
+        /*if (File.Exists(savePath))
         {
             File.Delete(savePath);
+        }*/
+        if(PlayerPrefs.GetString(savePref) != null)
+        {
+            PlayerPrefs.DeleteKey(savePref);
         }
     }
-    public void SetName(TMPro.TextMeshProUGUI text)
+    public void SetName(TextMeshProUGUI text)
     {
         playerName = text.text;
     }
@@ -64,35 +67,64 @@ public class GameManager : MonoBehaviour
     {
         Score score = new Score();
         int currentScore = MainManager.wave - 1;
+        Score scoreSave = LoadScore();
         int highScore;
-        if (LoadScore() != null)
-        {
-            highScore = LoadScore().m_waves;
-        }
-        else
-        {
-            highScore = 0;
-        }
+        string json;
+
+        print("Save1: " + scoreSave);
+
+        highScore = GetHighScore(scoreSave);
+        
         if (currentScore > highScore)
         {
             score.m_waves = currentScore;
             score.playerName = playerName;
 
-            string json = JsonUtility.ToJson(score);
-            File.WriteAllText(savePath, json);
+            print($"New High Score: {score.playerName} - {score.m_waves}");
+
+            json = JsonUtility.ToJson(score);
+            //File.WriteAllText(savePath, json);
+
+            print("Save2: " + scoreSave);
+            PlayerPrefs.SetString(savePref, json);
+            PlayerPrefs.Save();
         }
+        
+    }
+    int GetHighScore(Score scoreSave)
+    {
+        int highScore;
+        if (scoreSave != null)
+        {
+            highScore = scoreSave.m_waves;
+            print("High Score: " + highScore);
+        }
+        else
+        {
+            print("No High Score");
+            highScore = 0;
+        }
+        return highScore;
     }
     public Score LoadScore()
     {
-        if (!File.Exists(savePath))
+        /*if (File.Exists(savePath))
         {
-            return null;
+            string json = File.ReadAllText(savePath);
+            Score score = JsonUtility.FromJson<Score>(json);
+            print($"Load: {score}, {json}");
+            return score;
+        }*/
+        if (PlayerPrefs.GetString(savePref) != null)
+        {
+            string json = PlayerPrefs.GetString(savePref);
+            Score score = JsonUtility.FromJson<Score>(json);
+            print($"Load: {score}, {json}");
+            return score;
         }
-        string json = File.ReadAllText(savePath);
-        Score score = JsonUtility.FromJson<Score>(json);
-        return score;
+        return null;
     }
-    public void Exitgame()
+    public void ExitGame()
     {
 #if UNITY_EDITOR
         EditorApplication.ExitPlaymode();

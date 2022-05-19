@@ -14,6 +14,7 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] float waveDisplayTime = 2f;
     int spawnCount = 0;
     bool isSpawnReady = true;
+    bool canSpawnEnemy = true;
     bool canSpawnPortal = true;
     bool doSpeedUp = false;
     Camera cam;
@@ -25,15 +26,15 @@ public class SpawnManager : MonoBehaviour
 
     private void Update()
     {
-        if (spawnCount < maxEnemyCount && isSpawnReady)
+        if (spawnCount < maxEnemyCount && canSpawnEnemy && isSpawnReady)
         {
             StartCoroutine(CO_SpawnTime("Enemy"));
         }
-        if (canSpawnPortal)
+        if (canSpawnPortal && isSpawnReady)
         {
             StartCoroutine(CO_SpawnTime("Portal"));
         }
-        if (!FindObjectOfType<Enemy>() && isSpawnReady)
+        if (!FindObjectOfType<Enemy>()&& isSpawnReady)
         {
             NextWave();
         }
@@ -45,9 +46,9 @@ public class SpawnManager : MonoBehaviour
         {
             SpawnEnemy();
             spawnCount++;
-            isSpawnReady = false;
+            canSpawnEnemy = false;
             yield return new WaitForSeconds(spawnRate);
-            isSpawnReady = true;
+            canSpawnEnemy = true;
         }
         if(type == "Portal")
         {
@@ -55,7 +56,18 @@ public class SpawnManager : MonoBehaviour
             canSpawnPortal = false;
             yield return new WaitForSeconds(portalSpawnRate);
             canSpawnPortal = true;
+            Destroy(MainManager.WorldPortal);
         }
+    }
+
+    IEnumerator CO_ShowWaveCount()
+    {
+        GameObject waveText = waveDisplay.gameObject;
+        isSpawnReady = false;
+        waveText.SetActive(true);
+        yield return new WaitForSeconds(waveDisplayTime);
+        isSpawnReady = true;
+        waveText.SetActive(false);
     }
 
     void NextWave()
@@ -82,22 +94,13 @@ public class SpawnManager : MonoBehaviour
 
         waveDisplay.text = "Wave " + wave;
         StartCoroutine(CO_ShowWaveCount());
+        Destroy(MainManager.WorldPortal);
         spawnCount = 0;
-    }
-
-    IEnumerator CO_ShowWaveCount()
-    {
-        GameObject waveText = waveDisplay.gameObject;
-        isSpawnReady = false;
-        waveText.SetActive(true);
-        yield return new WaitForSeconds(waveDisplayTime);
-        isSpawnReady = true;
-        waveText.SetActive(false);
     }
 
     void SpawnEnemy()
     {
-        Vector2 spawnPos = RandomPointOnScreen(10, 10);
+        Vector2 spawnPos = RandomPointOnScreen(2, 2);
         GameObject enemy = Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
         if (doSpeedUp)
         {
@@ -109,7 +112,6 @@ public class SpawnManager : MonoBehaviour
     void SpawnPortal()
     {
         Vector2 spawnPos = RandomPointOnScreen(-5, -5);
-        Destroy(MainManager.WorldPortal);
         MainManager.WorldPortal = Instantiate(portalPrefab, spawnPos, Quaternion.Euler(0, 0, Random.Range(0f, 360f)));
     }
 

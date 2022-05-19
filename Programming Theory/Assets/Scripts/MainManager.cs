@@ -5,15 +5,17 @@ using TMPro;
 
 public class MainManager : GameManager
 {
+    [SerializeField] int startWave = 1;
+    [SerializeField] int startWaveHealth = 2;
     public static int wave = 1;
     public static int waveHealth = 2;
     public static GameObject WorldPortal;
+    [Header("MainManager")]
     [SerializeField] SpriteRenderer _CursorSprite;
     public static SpriteRenderer CursorSprite { get; private set; }
     [SerializeField] private GameObject pauseScreen;
     [SerializeField] GameObject pauseText;
     [SerializeField] GameObject gameOverText;
-    [SerializeField] GameObject restartButton;
     [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] TextMeshProUGUI highScoreText;
 
@@ -23,6 +25,9 @@ public class MainManager : GameManager
         CursorSprite = _CursorSprite;
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = false;
+        pauseScreen.SetActive(false);
+        wave = startWave;
+        waveHealth = startWaveHealth;
     }
     private void Update()
     {
@@ -36,8 +41,16 @@ public class MainManager : GameManager
         scoreText.text = "Waves: " + (wave - 1);
         SaveScore();
         Score score = LoadScore();
-        highScoreText.text = $"Most Waves: {score.playerName} - {score.m_waves}"; 
+        if (score != null)
+        {
+            highScoreText.text = $"Most Waves: {score.playerName} - {score.m_waves}";
+        }
+        else
+        {
+            highScoreText.text = "Most Waves: 0";
+        }
     }
+    
     public void PauseGame()
     {
         if (isPaused)
@@ -61,15 +74,16 @@ public class MainManager : GameManager
     public void GameOver()
     {
         Time.timeScale = 0;
+
         pauseScreen.SetActive(true);
         pauseText.SetActive(false);
         gameOverText.SetActive(true);
-        hasGameEnded = true;
 
-        UpdateScoreDisplay();
+        hasGameEnded = true;
 
         Cursor.visible = true;
 
         isPaused = true;
+        UpdateScoreDisplay();
     }
 }
