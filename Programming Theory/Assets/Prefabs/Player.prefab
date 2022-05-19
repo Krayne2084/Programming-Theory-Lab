@@ -327,7 +327,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 1000
-  maxSpeed: 3
   portalPrefabs:
   - {fileID: 6401233575233847789}
 --- !u!50 &190006180
@@ -456,6 +455,14 @@ PrefabInstance:
     - target: {fileID: 3439465903736103547, guid: 98c1b08b7a42b2d42b275336013d1c53, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 3641863927469621383, guid: 98c1b08b7a42b2d42b275336013d1c53, type: 3}
+      propertyPath: m_Size.x
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3641863927469621383, guid: 98c1b08b7a42b2d42b275336013d1c53, type: 3}
+      propertyPath: m_Size.y
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 8030093127452302227, guid: 98c1b08b7a42b2d42b275336013d1c53, type: 3}
       propertyPath: m_Name

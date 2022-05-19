@@ -115,7 +115,6 @@ public class Enemy : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        print("COLLISION");
         PlayerController player;
         if (collision.gameObject.GetComponent<PlayerController>())
         {

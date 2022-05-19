@@ -9,11 +9,11 @@ public class CursorFollow : MonoBehaviour
     private void Start()
     {
         _transform = transform;
-        cam = FindObjectOfType<Camera>();
+        cam = Camera.main;
     }
     private void LateUpdate()
     {
-        if (GameManager.isPaused)
+        if (GameManager.isPaused || GameManager.hasGameEnded)
         {
             return;
         }

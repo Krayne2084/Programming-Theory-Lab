@@ -21,12 +21,12 @@ public class PlayerController : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
         _collider = GetComponent<CircleCollider2D>();
         mainManager = FindObjectOfType<MainManager>();
-        mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        mainCam = FindObjectOfType<Camera>();
     }
 
     private void Update()
     {
-        if (GameManager.isPaused)
+        if (GameManager.isPaused || GameManager.hasGameEnded)
         {
             return;
         }
@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour
 
     void ShootPortal()
     {
-        //setactive a portal fro the pool of portals
+        //setactive a portal from the pool of portals
         portalPrefabs[0].SetActive(true);
         GameObject portal = portalPrefabs[0];
         portalPrefabs.RemoveAt(0);
