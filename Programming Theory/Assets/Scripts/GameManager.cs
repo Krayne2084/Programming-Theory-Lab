@@ -19,18 +19,9 @@ public class GameManager : MonoBehaviour
     protected virtual void Awake()
     {
         savePath = Application.persistentDataPath + "/Saves/saveFile.json";
-        ResetTime();
+        UnPauseGame();
         hasGameEnded = false;
         isPaused = false;
-        /*if (!Instance)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }*/
     }
 
     public virtual void LoadMain()
@@ -39,21 +30,17 @@ public class GameManager : MonoBehaviour
     }
     public void LoadMenu()
     {
-        ResetTime();
+        UnPauseGame();
         SceneManager.LoadScene(0);
     }
     
-    public void ResetTime()
+    public void UnPauseGame()
     {
         Time.timeScale = 1;
         isPaused = false;
     }
     public virtual void ResetScore()
     {
-        /*if (File.Exists(savePath))
-        {
-            File.Delete(savePath);
-        }*/
         if(PlayerPrefs.GetString(savePref) != null)
         {
             PlayerPrefs.DeleteKey(savePref);
@@ -71,8 +58,6 @@ public class GameManager : MonoBehaviour
         int highScore;
         string json;
 
-        print("Save1: " + scoreSave);
-
         highScore = GetHighScore(scoreSave);
         
         if (currentScore > highScore)
@@ -80,46 +65,33 @@ public class GameManager : MonoBehaviour
             score.m_waves = currentScore;
             score.playerName = playerName;
 
-            print($"New High Score: {score.playerName} - {score.m_waves}");
-
             json = JsonUtility.ToJson(score);
-            //File.WriteAllText(savePath, json);
 
-            print("Save2: " + scoreSave);
             PlayerPrefs.SetString(savePref, json);
             PlayerPrefs.Save();
         }
         
     }
+    //ABSTRACTION
     int GetHighScore(Score scoreSave)
     {
         int highScore;
         if (scoreSave != null)
         {
             highScore = scoreSave.m_waves;
-            print("High Score: " + highScore);
         }
         else
         {
-            print("No High Score");
             highScore = 0;
         }
         return highScore;
     }
     public Score LoadScore()
     {
-        /*if (File.Exists(savePath))
-        {
-            string json = File.ReadAllText(savePath);
-            Score score = JsonUtility.FromJson<Score>(json);
-            print($"Load: {score}, {json}");
-            return score;
-        }*/
         if (PlayerPrefs.GetString(savePref) != null)
         {
             string json = PlayerPrefs.GetString(savePref);
             Score score = JsonUtility.FromJson<Score>(json);
-            print($"Load: {score}, {json}");
             return score;
         }
         return null;
@@ -137,6 +109,7 @@ public class Score
 {
     public string playerName;
     public int m_waves;
+    //ENCAPSULATION
     public int waves 
     { 
         get 

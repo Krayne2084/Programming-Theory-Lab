@@ -18,7 +18,6 @@ public class MenuHandler : GameManager
     private void UpdateHighScoreDisplay()
     {
         Score score = LoadScore();
-        print("Show: " + score);
         if (score != null)
         {
             highScoreText.text = $"High Score: {score.playerName} - {score.m_waves}";
@@ -40,7 +39,6 @@ public class MenuHandler : GameManager
             placeholderName.text = "Please Enter Name...";
             return;
         }
-        print("LoadMain()");
 
         SetName(nameInput);
         base.LoadMain();
