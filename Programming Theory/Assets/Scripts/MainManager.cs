@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+//INHERITANCE
 public class MainManager : GameManager
 {
     [SerializeField] int startWave = 1;
@@ -19,6 +20,7 @@ public class MainManager : GameManager
     [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] TextMeshProUGUI highScoreText;
 
+    //POLYMORPHISM
     protected override void Awake()
     {
         base.Awake();
@@ -55,7 +57,7 @@ public class MainManager : GameManager
     {
         if (isPaused)
         {
-            ResetTime();
+            UnPauseGame();
             pauseScreen.SetActive(false);
 
             return;
